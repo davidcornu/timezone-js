@@ -46,54 +46,9 @@ exports.parseFile = function(filename, callback){
         data.rules[rule] = data.rules[rule] || [];
         break;
       case 'Link':
+        data.zones[parts[1]] = parts[0];
         break;
     }
-
-    // processZone
-    // getBasicOffset
-
-        // l = l.split("#")[0];
-        // if (l.length > 3) {
-        //   arr = l.split(/\s+/);
-        //   chunk = arr.shift();
-        //   //Ignore Leap.
-        //   switch (chunk) {
-        //     case 'Zone':
-        //       zone = arr.shift();
-        //       if (!_this.zones[zone]) {
-        //         _this.zones[zone] = [];
-        //       }
-        //       if (arr.length < 3) break;
-        //       //Process zone right here and replace 3rd element with the processed array.
-        //       arr.splice(3, arr.length, processZone(arr));
-        //       if (arr[3]) arr[3] = Date.UTC.apply(null, arr[3]);
-        //       arr[0] = -getBasicOffset(arr[0]);
-        //       _this.zones[zone].push(arr);
-        //       break;
-        //     case 'Rule':
-        //       rule = arr.shift();
-        //       if (!_this.rules[rule]) {
-        //         _this.rules[rule] = [];
-        //       }
-        //       //Parse int FROM year and TO year
-        //       arr[0] = parseInt(arr[0], 10);
-        //       arr[1] = parseInt(arr[1], 10) || arr[1];
-        //       //Parse time string AT
-        //       arr[5] = parseTimeString(arr[5]);
-        //       //Parse offset SAVE
-        //       arr[6] = getBasicOffset(arr[6]);
-        //       _this.rules[rule].push(arr);
-        //       break;
-        //     case 'Link':
-        //       //No zones for these should already exist.
-        //       if (_this.zones[arr[1]]) {
-        //         throw new Error('Error with Link ' + arr[1] + '. Cannot create link of a preexisted zone.');
-        //       }
-        //       //Create the link.
-        //       _this.zones[arr[1]] = arr[0];
-        //       break;
-        //   }
-        // }
   }
 
   reader.on('line', parseLine);
@@ -174,7 +129,7 @@ function parseTime(year, month, date, time){
 }
 
 
-var africa = path.resolve(__dirname, './tmp/africa');
+var africa = path.resolve(__dirname, './tmp/asia');
 exports.parseFile(africa, function(err, data){
   console.log(JSON.stringify(data, null, '  '));
 });

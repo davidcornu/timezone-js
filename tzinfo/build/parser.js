@@ -43,6 +43,7 @@ exports.parseFile = function(filename, callback){
         break;
       case 'Rule':
         rule = parts.shift();
+        data.rules[rule] = data.rules[rule] || [];
         break;
       case 'Link':
         break;
@@ -115,7 +116,7 @@ var MONTH_CODES = {
 };
 
 function parseZone(parts){
-  var offset = parts.shift() || 0;
+  var offset = parts.shift();
   var rule   = parts.shift();
   var format = parts.shift();
   var year   = parts.shift();
@@ -132,6 +133,9 @@ function parseZone(parts){
 }
 
 function parseOffset(str){
+  var negative = str[0] === '-';
+  if (negative) str = str.slice(1);
+
   var parts = str.split(':');
 
   var hours   = parseInt(parts.shift(), 10) || 0;
@@ -144,7 +148,7 @@ function parseOffset(str){
     seconds: seconds
   });
 
-  return -duration.asMinutes();
+  return negative ? duration.asMinutes() : -duration.asMinutes();
 }
 
 function parseRule(rule){
@@ -159,14 +163,14 @@ function parseTime(year, month, date, time){
   var hours   = timeParts.shift();
   var minutes = timeParts.shift();
 
-  var parts = [];
-  parts.push(parseInt(year, 10));
-  parts.push(MONTH_CODES[month] || 11);
-  parts.push(date ? parseInt(date, 10) : 31);
-  parts.push(hours ? parseInt(hours, 10) : 23);
-  parts.push(minutes ? parseInt(minutes, 10) : 59);
+  var timestamp = moment.utc(0);
+  timestamp.year(parseInt(year, 10));
+  timestamp.month(month ? MONTH_CODES[month] : 11);
+  timestamp.date(date ? parseInt(date, 10) : (month ? 1 : timestamp.daysInMonth()));
+  timestamp.hours(hours ? parseInt(hours, 10) : 0);
+  timestamp.minutes(minutes ? parseInt(minutes, 10) : 0);
 
-  return moment.utc(parts).toDate().valueOf();
+  return timestamp.valueOf();
 }
 
 

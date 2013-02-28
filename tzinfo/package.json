@@ -1,0 +1,24 @@
+{
+  "name": "tzinfo",
+  "version": "0.1.0",
+  "description": "Time zone information provided by the IANA Time Zone Database",
+  "main": "index.js",
+  "keywords": [
+    "time",
+    "timezone",
+    "zone",
+    "tzdata",
+    "zoneinfo",
+    "date",
+    "time"
+  ],
+  "author": "David Cornu",
+  "license": "BSD",
+  "devDependencies": {
+    "tar": "~0.1.16",
+    "request": "~2.14.0",
+    "async": "~0.2.5",
+    "fs.extra": "~1.2.0",
+    "moment": "~2.0.0"
+  }
+}

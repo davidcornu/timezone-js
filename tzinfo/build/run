@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+'use strict';
+
+var _      = require('underscore');
+var build  = require('./');
+var pretty = process.argv[2] === '--pretty';
+
+build.run(function(err, results){
+  if (err) throw err;
+  var combined = {rules: {}, zones: {}};
+  results.forEach(function(r){
+    _.extend(combined.zones, r.zones);
+    _.extend(combined.rules, r.rules);
+  });
+  var output = pretty ? JSON.stringify(combined, null, '  ') : JSON.stringify(combined);
+  process.stdout.write(output);
+});

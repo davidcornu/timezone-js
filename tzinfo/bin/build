@@ -2,7 +2,7 @@
 'use strict';
 
 var _      = require('underscore');
-var build  = require('./');
+var build  = require('../build');
 var pretty = process.argv[2] === '--pretty';
 
 build.run(function(err, results, version){

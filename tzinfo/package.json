@@ -14,11 +14,14 @@
   ],
   "author": "David Cornu",
   "license": "BSD",
+  "dependencies": {
+    "moment": "~2.0.0"
+  },
   "devDependencies": {
     "tar": "~0.1.16",
     "request": "~2.14.0",
     "async": "~0.2.5",
     "fs.extra": "~1.2.0",
-    "moment": "~2.0.0"
+    "underscore": "~1.4.4"
   }
 }

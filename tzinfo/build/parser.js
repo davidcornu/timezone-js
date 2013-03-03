@@ -1,13 +1,8 @@
 'use strict';
 
-var downloader = require('./downloader');
 var readline   = require('readline');
 var moment     = require('moment');
-var path       = require('path');
 var fs         = require('fs');
-
-var tmpdir  = downloader.tmpdir;
-var datadir = exports.datadir = path.resolve(__dirname, '../data');
 
 exports.parseFile = function(filename, callback){
   var reader = readline.createInterface({
@@ -37,13 +32,14 @@ exports.parseFile = function(filename, callback){
 
     switch (chunk) {
       case 'Zone':
-        zone = parts.shift();
+        zone = parts.slice(0, 1);
         data.zones[zone] = data.zones[zone] || [];
-        data.zones[zone].push(parseZone(parts));
+        data.zones[zone].push(parseZone(parts.slice(1)));
         break;
       case 'Rule':
-        rule = parts.shift();
+        rule = parts.slice(0, 1);
         data.rules[rule] = data.rules[rule] || [];
+        data.rules[rule].push(parseRule(parts.slice(1)));
         break;
       case 'Link':
         data.zones[parts[1]] = parts[0];
@@ -67,10 +63,17 @@ var MONTH_CODES = {
   'Sep': 8,
   'Oct': 9,
   'Nov': 10,
-  'Dec': 11,
+  'Dec': 11
 };
 
+function dashToNull(str){
+  if (!str) return null;
+  return str.trim() === '-' ? null : str;
+}
+
 function parseZone(parts){
+  parts = parts.slice();
+
   var offset = parts.shift();
   var rule   = parts.shift();
   var format = parts.shift();
@@ -81,7 +84,7 @@ function parseZone(parts){
 
   return [
     parseOffset(offset),
-    parseRule(rule),
+    dashToNull(rule),
     format,
     parseTime(year, month, date, time)
   ];
@@ -106,11 +109,6 @@ function parseOffset(str){
   return negative ? duration.asMinutes() : -duration.asMinutes();
 }
 
-function parseRule(rule){
-  if (rule.trim() === '-') return null;
-  return rule;
-}
-
 function parseTime(year, month, date, time){
   if (!year) return null;
   var timeParts = (time || '').split(':');
@@ -128,8 +126,37 @@ function parseTime(year, month, date, time){
   return timestamp.valueOf();
 }
 
+function parseDuration(str){
+  var parts   = str.split(':');
+  var hours   = parseInt(parts.shift(), 10) || 0;
+  var minutes = parseInt(parts.shift(), 10) || 0;
 
-var africa = path.resolve(__dirname, './tmp/asia');
-exports.parseFile(africa, function(err, data){
-  console.log(JSON.stringify(data, null, '  '));
-});
+  return moment.duration({
+    hours: hours,
+    minutes: minutes
+  }).asMinutes();
+}
+
+function parseRule(parts){
+  parts = parts.slice();
+
+  var from   = parts.shift();
+  var to     = parts.shift();
+  var type   = parts.shift();
+  var month  = parts.shift();
+  var on     = parts.shift();
+  var at     = parts.shift();
+  var save   = parts.shift();
+  var letter = parts.shift();
+
+  return [
+    parseInt(from, 10),
+    parseInt(to, 10) || to,
+    dashToNull(type),
+    MONTH_CODES[month],
+    on,
+    at,
+    parseDuration(save),
+    dashToNull(letter)
+  ];
+}

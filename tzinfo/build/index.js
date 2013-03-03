@@ -20,7 +20,7 @@ var olsonFiles = [
 ];
 
 exports.run = function(callback){
-  var q = [], results;
+  var q = [], results, version;
 
   q.push(downloader.setup);
 
@@ -35,10 +35,17 @@ exports.run = function(callback){
     });
   });
 
+  q.push(function(done){
+    downloader.getVersion(function(err, ver){
+      version = ver;
+      done(err);
+    });
+  });
+
   q.push(downloader.cleanup);
 
   async.series(q, function(err){
     if (err) return callback(err);
-    callback(null, results);
+    callback(null, results, version);
   });
 };

@@ -21,3 +21,15 @@ exports.download = function(done){
   request(url).pipe(tar.stdin);
   tar.on('exit', done);
 };
+
+exports.getVersion = function(done){
+  var makefile = path.join(tmpdir, 'Makefile');
+  fs.exists(makefile, function(exists){
+    if (!exists) return done(new Error(makefile + ' does not exist'));
+    fs.readFile(makefile, 'utf8', function(err, body){
+      if (err) return done(err);
+      var matches = /VERSION=\s+([0-9a-b]+)/i.exec(body);
+      done(null, matches[1]);
+    });
+  });
+}

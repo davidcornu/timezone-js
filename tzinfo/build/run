@@ -5,9 +5,9 @@ var _      = require('underscore');
 var build  = require('./');
 var pretty = process.argv[2] === '--pretty';
 
-build.run(function(err, results){
+build.run(function(err, results, version){
   if (err) throw err;
-  var combined = {rules: {}, zones: {}};
+  var combined = {rules: {}, zones: {}, version: version};
   results.forEach(function(r){
     _.extend(combined.zones, r.zones);
     _.extend(combined.rules, r.rules);

@@ -8,7 +8,7 @@ var fs      = require('fs.extra');
 
 var url = 'http://www.iana.org/time-zones/repository/tzdata-latest.tar.gz';
 
-var tmpdir = exports.tmpdir = path.resolve(__dirname, './tmp');
+var tmpdir = exports.tmpdir = path.resolve(__dirname, '../tmp');
 
 exports.setup = function(done){ fs.mkdirp(tmpdir, done); };
 
@@ -32,4 +32,4 @@ exports.getVersion = function(done){
       done(null, matches[1]);
     });
   });
-}
+};
